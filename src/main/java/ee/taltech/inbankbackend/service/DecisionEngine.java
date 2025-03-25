@@ -24,7 +24,7 @@ public class DecisionEngine {
     /**
      * Calculates the maximum loan amount and period for the customer based on their ID code,
      * the requested loan amount and the loan period.
-     * The loan period must be between 12 and 60 months (inclusive).
+     * The loan period must be between 12 and 48 months (inclusive).
      * The loan amount must be between 2000 and 10000€ months (inclusive).
      *
      * @param personalCode ID code of the customer that made the request.
@@ -35,10 +35,11 @@ public class DecisionEngine {
      * @throws InvalidLoanAmountException   If the requested loan amount is invalid
      * @throws InvalidLoanPeriodException   If the requested loan period is invalid
      * @throws NoValidLoanException         If there is no valid loan found for the given ID code, loan amount and loan period
+     * @throws InvalidAgeException          If the given age is not in the right range
      */
     public DecisionResponseDTO calculateApprovedLoan(String personalCode, Long loanAmount, int loanPeriod)
             throws InvalidPersonalCodeException, InvalidLoanAmountException, InvalidLoanPeriodException,
-            NoValidLoanException {
+            NoValidLoanException, InvalidAgeException {
         verifyInputs(personalCode, loanAmount, loanPeriod);
         verifyAge(personalCode);
         int outputLoanAmount;
@@ -70,11 +71,7 @@ public class DecisionEngine {
     }
 
     /**
-     * Calculates the credit modifier of the customer to according to the last four digits of their ID code.
-     * Debt - 0000...2499
-     * Segment 1 - 2500...4999
-     * Segment 2 - 5000...7499
-     * Segment 3 - 7500...9999
+     * Calculates the credit modifier of the customer to according to the hardcoded values set in DecisionEngineConstants
      *
      * @param personalCode ID code of the customer that made the request.
      * @return Segment to which the customer belongs.
@@ -117,7 +114,7 @@ public class DecisionEngine {
     }
 
     /**
-     * returns if the given age is suitable
+     * Verify if age is valid, if not throw error
      * @param personalCode personalCode to check
      */
     private void verifyAge(String personalCode) {

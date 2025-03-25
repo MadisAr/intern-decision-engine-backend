@@ -32,6 +32,7 @@ public class DecisionEngineController {
      * A REST endpoint that handles requests for loan decisions.
      * The endpoint accepts POST requests with a request body containing the customer's personal ID code,
      * requested loan amount, and loan period.<br><br>
+     * The errors are handled in GlobalExceptionHandler
      * - If the loan amount or period is invalid, the endpoint returns a bad request response with an error message.<br>
      * - If the personal ID code is invalid, the endpoint returns a bad request response with an error message.<br>
      * - If an unexpected error occurs, the endpoint returns an internal server error response with an error message.<br>
