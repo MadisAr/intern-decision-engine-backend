@@ -1,17 +1,17 @@
 package ee.taltech.inbankbackend.exceptions;
 
 /**
- * Thrown when no valid loan is found.
+ * Thrown when age is invalid.
  */
-public class NoValidLoanException extends RuntimeException {
+public class InvalidAgeException extends RuntimeException {
     private final String message;
     private final Throwable cause;
 
-    public NoValidLoanException(String message) {
+    public InvalidAgeException(String message) {
         this(message, null);
     }
 
-    public NoValidLoanException(String message, Throwable cause) {
+    public InvalidAgeException(String message, Throwable cause) {
         this.message = message;
         this.cause = cause;
     }

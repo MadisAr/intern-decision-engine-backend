@@ -1,11 +1,12 @@
 package ee.taltech.inbankbackend.endpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ee.taltech.inbankbackend.data.DecisionRequestDTO;
+import ee.taltech.inbankbackend.data.DecisionResponseDTO;
 import ee.taltech.inbankbackend.exceptions.InvalidLoanAmountException;
 import ee.taltech.inbankbackend.exceptions.InvalidLoanPeriodException;
 import ee.taltech.inbankbackend.exceptions.InvalidPersonalCodeException;
 import ee.taltech.inbankbackend.exceptions.NoValidLoanException;
-import ee.taltech.inbankbackend.service.Decision;
 import ee.taltech.inbankbackend.service.DecisionEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,10 +57,10 @@ public class DecisionEngineControllerTest {
     public void givenValidRequest_whenRequestDecision_thenReturnsExpectedResponse()
             throws Exception, InvalidLoanPeriodException, NoValidLoanException, InvalidPersonalCodeException,
             InvalidLoanAmountException {
-        Decision decision = new Decision(1000, 12, null);
+        DecisionResponseDTO decision = new DecisionResponseDTO(1000, 12, null);
         when(decisionEngine.calculateApprovedLoan(anyString(), anyLong(), anyInt())).thenReturn(decision);
 
-        DecisionRequest request = new DecisionRequest("1234", 10L, 10);
+        DecisionRequestDTO request = new DecisionRequestDTO("1234", 10L, 10);
 
         MvcResult result = mockMvc.perform(post("/loan/decision")
                         .content(objectMapper.writeValueAsString(request))
@@ -71,7 +72,7 @@ public class DecisionEngineControllerTest {
                 .andExpect(jsonPath("$.errorMessage").isEmpty())
                 .andReturn();
 
-        DecisionResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponse.class);
+        DecisionResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponseDTO.class);
         assert response.getLoanAmount() == 1000;
         assert response.getLoanPeriod() == 12;
         assert response.getErrorMessage() == null;
@@ -88,7 +89,7 @@ public class DecisionEngineControllerTest {
         when(decisionEngine.calculateApprovedLoan(anyString(), anyLong(), anyInt()))
                 .thenThrow(new InvalidPersonalCodeException("Invalid personal code"));
 
-        DecisionRequest request = new DecisionRequest("1234", 10L, 10);
+        DecisionRequestDTO request = new DecisionRequestDTO("1234", 10L, 10);
 
         MvcResult result = mockMvc.perform(post("/loan/decision")
                         .content(objectMapper.writeValueAsString(request))
@@ -100,7 +101,7 @@ public class DecisionEngineControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("Invalid personal code"))
                 .andReturn();
 
-        DecisionResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponse.class);
+        DecisionResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponseDTO.class);
         assert response.getLoanAmount() == null;
         assert response.getLoanPeriod() == null;
         assert response.getErrorMessage().equals("Invalid personal code");
@@ -117,7 +118,7 @@ public class DecisionEngineControllerTest {
         when(decisionEngine.calculateApprovedLoan(anyString(), anyLong(), anyInt()))
                 .thenThrow(new InvalidLoanAmountException("Invalid loan amount"));
 
-        DecisionRequest request = new DecisionRequest("1234", 10L, 10);
+        DecisionRequestDTO request = new DecisionRequestDTO("1234", 10L, 10);
 
         MvcResult result = mockMvc.perform(post("/loan/decision")
                         .content(objectMapper.writeValueAsString(request))
@@ -129,7 +130,7 @@ public class DecisionEngineControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("Invalid loan amount"))
                 .andReturn();
 
-        DecisionResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponse.class);
+        DecisionResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponseDTO.class);
         assert response.getLoanAmount() == null;
         assert response.getLoanPeriod() == null;
         assert response.getErrorMessage().equals("Invalid loan amount");
@@ -146,7 +147,7 @@ public class DecisionEngineControllerTest {
         when(decisionEngine.calculateApprovedLoan(anyString(), anyLong(), anyInt()))
                 .thenThrow(new InvalidLoanPeriodException("Invalid loan period"));
 
-        DecisionRequest request = new DecisionRequest("1234", 10L, 10);
+        DecisionRequestDTO request = new DecisionRequestDTO("1234", 10L, 10);
 
         MvcResult result = mockMvc.perform(post("/loan/decision")
                         .content(objectMapper.writeValueAsString(request))
@@ -158,7 +159,7 @@ public class DecisionEngineControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("Invalid loan period"))
                 .andReturn();
 
-        DecisionResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponse.class);
+        DecisionResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponseDTO.class);
         assert response.getLoanAmount() == null;
         assert response.getLoanPeriod() == null;
         assert response.getErrorMessage().equals("Invalid loan period");
@@ -175,7 +176,7 @@ public class DecisionEngineControllerTest {
         when(decisionEngine.calculateApprovedLoan(anyString(), anyLong(), anyInt()))
                 .thenThrow(new NoValidLoanException("No valid loan available"));
 
-        DecisionRequest request = new DecisionRequest("1234", 1000L, 12);
+        DecisionRequestDTO request = new DecisionRequestDTO("1234", 1000L, 12);
 
         MvcResult result = mockMvc.perform(post("/loan/decision")
                         .content(objectMapper.writeValueAsString(request))
@@ -187,7 +188,7 @@ public class DecisionEngineControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("No valid loan available"))
                 .andReturn();
 
-        DecisionResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponse.class);
+        DecisionResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponseDTO.class);
         assert response.getLoanAmount() == null;
         assert response.getLoanPeriod() == null;
         assert response.getErrorMessage().equals("No valid loan available");
@@ -203,7 +204,7 @@ public class DecisionEngineControllerTest {
             InvalidLoanAmountException {
         when(decisionEngine.calculateApprovedLoan(anyString(), anyLong(), anyInt())).thenThrow(new RuntimeException());
 
-        DecisionRequest request = new DecisionRequest("1234", 10L, 10);
+        DecisionRequestDTO request = new DecisionRequestDTO("1234", 10L, 10);
 
         MvcResult result = mockMvc.perform(post("/loan/decision")
                         .content(objectMapper.writeValueAsString(request))
@@ -215,7 +216,7 @@ public class DecisionEngineControllerTest {
                 .andExpect(jsonPath("$.errorMessage").value("An unexpected error occurred"))
                 .andReturn();
 
-        DecisionResponse response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponse.class);
+        DecisionResponseDTO response = objectMapper.readValue(result.getResponse().getContentAsString(), DecisionResponseDTO.class);
         assert response.getLoanAmount() == null;
         assert response.getLoanPeriod() == null;
         assert response.getErrorMessage().equals("An unexpected error occurred");
