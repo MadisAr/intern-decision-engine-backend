@@ -1,7 +1,7 @@
 # TICKET-101 conclusion
 ## Changes made
 The biggest problem to me seemed to be using some arbitrary ranges instead of the given fixed values to calculate credit scores, 
-but I also changed some other stuff.
+but I also changed some other stuff:).
 
 ### Changing data transfer objects
 It was a good idea by the intern to use classes to pass info between 
