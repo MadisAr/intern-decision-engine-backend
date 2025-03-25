@@ -1,8 +1,7 @@
 # TICKET-101 conclusion
 ## Changes made
-I made many changes (I'm sorry if I changed too much, I got carried away:).
-The biggest problem to me seemed to be using some arbitrary ranges instead of the given fixed values
-to calculate credit scores. The code also used wrong logic to find the biggest loan we could provide. 
+The biggest problem to me seemed to be using some arbitrary ranges instead of the given fixed values to calculate credit scores, 
+but I also changed some other stuff.
 
 ### Changing data transfer objects
 It was a good idea by the intern to use classes to pass info between 
@@ -21,10 +20,8 @@ Otherwise, they were getting caught by a general Exception clause, which I didn'
 I noticed that in the DecisionEngineConstants file, the maximum loan period was incorrectly set to 60, not 48 months, so I fixed that.
 The project incorrectly used id ranges for detecting people's credit scores,
 but actually the task was to hard code 4 values (if I understood it correctly:), so I added a map of values to the DecisionEngineConstants file.
-I also added a credit score calculating function, before this wasn't being implemented.
 The verifyInputs function seemed to be working fine, so I didn't touch that
 
 ### Tests
 Since there were some mistakes in the original project then the tests weren't working properly
-so I changed them to fit the actual requirements and added a test for age verification.
-
+so I changed them to fit the actual requirements and later added a test for age verification functionality.

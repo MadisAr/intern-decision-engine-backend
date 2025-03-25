@@ -41,59 +41,32 @@ public class DecisionEngine {
             NoValidLoanException {
         verifyInputs(personalCode, loanAmount, loanPeriod);
         verifyAge(personalCode);
-
         int outputLoanAmount;
+
         creditModifier = getCreditModifier(personalCode);
         if (creditModifier == 0) {
             throw new NoValidLoanException("No valid loan found!");
         }
 
-        //if we cannot approve such a loan decrease the months and money until we do (or don't)
-        if (creditScore(creditModifier, loanAmount, loanPeriod) < DecisionEngineConstants.MINIMUM_CREDIT_SCORE) {
-            Long originalAmount = loanAmount;
-            boolean found = false;
-
-            while (loanPeriod <= DecisionEngineConstants.MAXIMUM_LOAN_PERIOD) {
-                loanAmount = originalAmount;
-                while (loanAmount >= DecisionEngineConstants.MINIMUM_LOAN_AMOUNT) {
-                    loanAmount -= 5;
-                    if (creditScore(creditModifier, loanAmount, loanPeriod) >= 0.1) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found) break;
-
-                loanPeriod++;
-            }
-
-            // if we didn't find a suitable loan throw error
-            if (!found) throw new NoValidLoanException("No valid loan found!");
-
-
-        } else {
-            // we add to the loan amount until the credit score gets too low
-            while (creditScore(creditModifier, loanAmount, loanPeriod) > DecisionEngineConstants.MINIMUM_CREDIT_SCORE) {
-                System.out.println();
-                loanAmount += 5;
+        while (highestValidLoanAmount(loanPeriod) < DecisionEngineConstants.MINIMUM_LOAN_AMOUNT) {
+            loanPeriod++;
+            if (loanPeriod > DecisionEngineConstants.MAXIMUM_LOAN_PERIOD) {
+                throw new NoValidLoanException("No valid loan found!");
             }
         }
 
+        outputLoanAmount = Math.min(DecisionEngineConstants.MAXIMUM_LOAN_AMOUNT, highestValidLoanAmount(loanPeriod));
 
-        outputLoanAmount = (int) Math.min(DecisionEngineConstants.MAXIMUM_LOAN_AMOUNT, loanAmount);
         return new DecisionResponseDTO(outputLoanAmount, loanPeriod, null);
     }
 
     /**
-     * Calculates the creditscore with given input
+     * Calculates the largest valid loan for the current credit modifier and loan period.
      *
-     * @param creditModifier user's creditmodifier
-     * @param loanAmount     user's loan size in euros
-     * @param loanPeriod     loanperiod in months
-     * @return creditscore with inputs
+     * @return Largest valid loan amount
      */
-    private double creditScore(int creditModifier, Long loanAmount, int loanPeriod) {
-        return ((double) creditModifier / loanAmount) * loanPeriod / 10;
+    private int highestValidLoanAmount(int loanPeriod) {
+        return creditModifier * loanPeriod;
     }
 
     /**
