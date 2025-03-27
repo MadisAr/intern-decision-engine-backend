@@ -31,3 +31,4 @@ so I changed them to fit the actual requirements and later added a test for age 
 There seemed to be also some problems with the frontend code,
 for example, the page doesn't actually still show the biggest loan a person could get.
 The slider on the front end is also slightly broken, displaying the wrong selected month values.
+Otherwise, if these bugs are fixed, the frontend will be great!
