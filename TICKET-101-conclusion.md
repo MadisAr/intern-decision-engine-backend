@@ -25,3 +25,9 @@ The verifyInputs function seemed to be working fine, so I didn't touch that
 ### Tests
 Since there were some mistakes in the original project then the tests weren't working properly
 so I changed them to fit the actual requirements and later added a test for age verification functionality.
+
+
+### Frontend
+There seemed to be also some problems with the frontend code,
+for example, the page doesn't actually still show the biggest loan a person could get.
+The slider on the front end is also slightly broken, displaying the wrong selected month values.
